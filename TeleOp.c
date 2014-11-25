@@ -88,12 +88,45 @@ void initializeRobot()
 // POV (D-Pad) -1=None 0-7=Positions (0=up, 1-7 +CW)
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+void stopMotors()
+{
+	motor[motorB] = 0;
+	motor[motorC] = 0;
+	motor[motorD] = 0;
+	motor[motorE] = 0;
+	motor[motorF] = 0;
+	motor[motorG] = 0;
+	motor[motorH] = 0;
+	motor[motorI] = 0;
+}
+
+task eStop()
+{
+	while(true)
+	{
+		getJoystickSettings(joystick);
+		if(joy1Btn(10) && joy2Btn(10)) //Program will pause everything when E-Stop button (start) hit on both controllers
+		{
+			stopMotors();
+			while (joy1Btn(10) && joy2Btn(10)) //Wait until the buttons are released
+			{
+				getJoystickSettings(joystick);
+			}
+			while (!(joy1Btn(10) && joy2Btn(10))) //Wait until they are pressed again
+			{
+				getJoystickSettings(joystick);
+			}
+			getJoystickSettings(joystick);
+		}
+	}
+}
+
 task main()
 {
   initializeRobot();
 
   waitForStart();   // wait for start of tele-op phase
-
+	StartTask(eStop);
   //left is motorG
   //right is motorF
 
