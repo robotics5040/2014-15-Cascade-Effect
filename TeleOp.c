@@ -48,7 +48,6 @@ void initializeRobot()
 {
   // Place code here to sinitialize servos to starting positions.
   // Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
-
   return;
 }
 
@@ -124,7 +123,7 @@ task eStop()
 task main()
 {
   initializeRobot();
-
+  bool faceButtonPressed = false;
   waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop);
   //left is motorG
@@ -134,28 +133,25 @@ task main()
   {
 	  getJoystickSettings(joystick);
 
-	  if (joy1Btn(5) || joy1Btn(6)) //RT = Increased power
-	  {
 	  	if (joystick.joy1_y1 > 8 && joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
 		  	motor[motorG] = (joystick.joy1_y1)/1.5;
 		  if (joystick.joy1_y2 > 8 && joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
 		  	motor[motorF] = (joystick.joy1_y2)/1.5;
-		}
-		else if (joy1Btn(7) || joy1Btn(8)) //RB = decrease power
-		{
-	  	if (joystick.joy1_y1 > 8 && joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
-		  	motor[motorG] = (joystick.joy1_y1)/2.5;
-		  if (joystick.joy1_y2 > 8 && joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
-		  	motor[motorF] = (joystick.joy1_y2)/2.5;
-		}
-		else //Normal power
-		{
-	  	if (joystick.joy1_y1 > 8 && joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
-		  	motor[motorG] = (joystick.joy1_y1)/1.5;
-		  if (joystick.joy1_y2 > 8 && joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
-		  	motor[motorF] = (joystick.joy1_y2)/1.5;
-		}
 
+		  	if(!joy2Btn(0) || !joy2Btn(1) || !joy2Btn(2) || !joy2Btn(3))
+		  		faceButtonPressed = false;
+		  	if((joy2Btn(0) || joy2Btn(2)) && faceButtonPressed == false) //medium hieght
+		  	{
+		  		faceButtonPressed = true;
+		  	}
+		  	if(joy2Btn(1) && faceButtonPressed == false) //low hieght
+		  	{
+		  		faceButtonPressed = true;
+		  	}
+		  	if(joy2Btn(3) && faceButtonPressed == false) //high hieght
+		  	{
+		  		faceButtonPressed = true;
+		  	}
     // Insert code to have servos and motors respond to joystick and button values.
 
     // Look in the ROBOTC samples folder for programs that may be similar to what you want to perform.
