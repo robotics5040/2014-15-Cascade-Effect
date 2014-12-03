@@ -152,10 +152,12 @@ task main()
 			if(!ballPickupEnabled)
 			{
 				motor[motorBlPickup] = 50;
+				ballPickupEnabled = true;
 			}
 			else
 			{
 				motor[motorBlPickup] = 0;
+				ballPickupEnabled = false;
 			}
 		}
 
