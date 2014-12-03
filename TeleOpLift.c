@@ -1,11 +1,14 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
+#pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
 #pragma config(Sensor, S4,     ,               sensorCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     motorF,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop, reversed)
-#pragma config(Motor,  mtr_S1_C3_1,     motorH,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     motorI,        tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C2_2,     motorL2,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C3_1,     motorSp,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_2,     motorBm,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_1,     motorLft1,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_2,     motorLft2,     tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S1_C4_1,    servo1,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
@@ -83,36 +86,36 @@ void initializeRobot()
 task main()
 {
 
- nMotorEncoder[motorE] = -10;
+ nMotorEncoder[motorLft1] = -10;
   while (true)
   {
   	//lift operation code DO NOT START UNLESS LIFT IS FULLY DOWN
 	  if (joystick.joy2_y1 > 15 || joystick.joy2_y1 < -15) //If not in deadzone, do motors LEFT
 		{
-			if (joystick.joy2_y1 < 0 && nMotorEncoder[motorE] <= 720)
+			if (joystick.joy2_y1 < 0 && nMotorEncoder[motorLft1] <= 720)
 			{
-				if(nMotorEncoder[motorE] <= 720 && nMotorEncoder[motorE] > 180)
+				if(nMotorEncoder[motorLft1] <= 720 && nMotorEncoder[motorLft1] > 180)
 				{
-					motor[motorE] = -20;
-	 				motor[motorG] = -20;
+					motor[motorLft1] = -20;
+	 				motor[motorLft2] = -20;
 				}
 				else
 				{
-					motor[motorE] = 0;
-	 				motor[motorG] = 0;
+					motor[motorLft1] = 0;
+	 				motor[motorLft2] = 0;
 	 			}
 
 			}
 			else
 			{
-	  		motor[motorE] = (joystick.joy2_y1)/1.5;
-	 			motor[motorG] = (joystick.joy2_y1)/1.5;
+	  		motor[motorLft1] = (joystick.joy2_y1)/1.5;
+	 			motor[motorLft2] = (joystick.joy2_y1)/1.5;
 	 		}
 	 	}
 	 	else
 	 	{
-		 		motor[motorE] = 0;
-		 		motor[motorG] = 0;
+		 		motor[motorLft1] = 0;
+		 		motor[motorLft2] = 0;
 		}
 
 
