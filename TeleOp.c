@@ -1,11 +1,14 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     motorF,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_1,     motorH,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     motorI,        tmotorTetrix, openLoop)
+#pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S4,     ,               sensorCustom)
+#pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C2_2,     motorL2,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C3_1,     motorSp,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_2,     motorBm,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_1,     motorLft1,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_2,     motorLft2,     tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S1_C4_1,    servo1,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
@@ -89,14 +92,14 @@ void initializeRobot()
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 void stopMotors()
 {
-	motor[motorB] = 0;
-	motor[motorC] = 0;
-	motor[motorD] = 0;
-	motor[motorE] = 0;
-	motor[motorF] = 0;
-	motor[motorG] = 0;
-	motor[motorH] = 0;
-	motor[motorI] = 0;
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	motor[motorSp] = 0;
+	motor[motorBm] = 0;
+	motor[motorLft1] = 0;
+	motor[motorLft2] = 0;
 }
 
 task eStop()
@@ -104,18 +107,16 @@ task eStop()
 	while(true)
 	{
 		getJoystickSettings(joystick);
+
+		if(joy1Btn(10)) //debug p1 estop
+			PlaySound(soundBlip);
+		if(joy2Btn(10)) //debug p2 estop
+			PlaySound(soundBeepBeep);
 		if(joy1Btn(10) && joy2Btn(10)) //Program will pause everything when E-Stop button (start) hit on both controllers
 		{
+			PlaySound(soundException); //debug estop command
 			stopMotors();
-			while (joy1Btn(10) && joy2Btn(10)) //Wait until the buttons are released
-			{
-				getJoystickSettings(joystick);
-			}
-			while (!(joy1Btn(10) && joy2Btn(10))) //Wait until they are pressed again
-			{
-				getJoystickSettings(joystick);
-			}
-			getJoystickSettings(joystick);
+			StopAllTasks();
 		}
 	}
 }
