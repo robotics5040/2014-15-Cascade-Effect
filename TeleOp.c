@@ -129,15 +129,26 @@ task main()
 	{
 		getJoystickSettings(joystick);
 
-		if (joystick.joy1_y1 > 8 && joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
+		if (joystick.joy1_y1 > 8 || joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
 		{
 			motor[motorL1] = (joystick.joy1_y1)/1.5;
 			motor[motorL2] = (joystick.joy1_y1)/1.5;
 		}
-		if (joystick.joy1_y2 > 8 && joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
+		else
+		{
+			motor[motorL1] = 0;
+			motor[motorL2] = 0;
+		}
+
+		if (joystick.joy1_y2 > 8 || joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
 		{
 			motor[motorR1] = (joystick.joy1_y2)/1.5;
 			motor[motorR2] = (joystick.joy1_y2)/1.5;
+		}
+		else
+		{
+			motor[motorR1] = 0;
+			motor[motorR2] = 0;
 		}
 
 		//rolling goal clamp code
