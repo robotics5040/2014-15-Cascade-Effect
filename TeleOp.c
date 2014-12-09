@@ -117,8 +117,37 @@ task eStop()
 	}
 }
 
+task lift1()
+{
+
+			while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+			{
+				motor[motorLft1] = 20;
+				motor[motorLft2] = 20;
+			}
+}
+
+task lift2()
+{
+	while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+			{
+				motor[motorLft1] = 20;
+				motor[motorLft2] = 20;
+			}
+}
+
+task lift3()
+{
+	while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+			{
+				motor[motorLft1] = 20;
+				motor[motorLft2] = 20;
+			}
+}
+
 task main()
 {
+
 	initializeRobot();
 	bool faceButtonPressed = false;
 	bool ballPickupEnabled = false;
@@ -178,29 +207,17 @@ task main()
 		if((joy2Btn(0) || joy2Btn(2)) && faceButtonPressed == false) //medium height
 		{
 			faceButtonPressed = true;
-			while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
+			StartTask(lift3);
 		}
 		if(joy2Btn(1) && faceButtonPressed == false) //low height
 		{
 			faceButtonPressed = true;
-			while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
+			StartTask(lift2);
 		}
 		if(joy2Btn(3) && faceButtonPressed == false) //high height
 		{
 			faceButtonPressed = true;
-			while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
+			StartTask(lift1);
 		}
 		// Insert code to have servos and motors respond to joystick and button values.
 
