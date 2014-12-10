@@ -41,6 +41,7 @@
 // In most cases, you may not have to add any code to this function and it will remain "empty".
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+  bool liftMotorActivated = false;
 
 void initializeRobot()
 {
@@ -117,39 +118,52 @@ task eStop()
 	}
 }
 
-task lift1()
+task lift1() //high
 {
 
-			while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+			while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true))/*encoder count @ 0*/
 			{
 				motor[motorLft1] = 20;
 				motor[motorLft2] = 20;
 			}
+			liftMotorActivated = false;
 }
 
-task lift2()
+task lift2() //low
 {
-	while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+	while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true))/*encoder count @ 0*/
 			{
 				motor[motorLft1] = 20;
 				motor[motorLft2] = 20;
 			}
+			liftMotorActivated = false;
 }
 
-task lift3()
+task lift3() //medium
 {
-	while(nMotorEncoder(motorLft1) < 0)/*encoder count @ 0*/
+	while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true)) /*encoder count @ 0*/
 			{
 				motor[motorLft1] = 20;
 				motor[motorLft2] = 20;
 			}
+			liftMotorActivated = false;
+}
+
+task liftReset() //stop other lift commands
+{
+	liftMotorActivated = false;
+	while(nMotorEncoder(motorLft1) > 0)
+			{
+				motor[motorLft1] = -20;
+				motor[motorLft2] = -20;
+			}
+
 }
 
 task main()
 {
-
 	initializeRobot();
-	bool faceButtonPressed = false;
+
 	bool ballPickupEnabled = false;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
@@ -202,22 +216,27 @@ task main()
 		}
 
 		//autonomous lift control code
-		if(!joy2Btn(0) && !joy2Btn(1) && !joy2Btn(2) && !joy2Btn(3))
-			faceButtonPressed = false;
-		if((joy2Btn(0) || joy2Btn(2)) && faceButtonPressed == false) //medium height
+
+		if((joy2Btn(0) || joy2Btn(2)) && liftMotorActivated == false) //medium height
 		{
-			faceButtonPressed = true;
+			liftMotorActivated = true;
 			StartTask(lift3);
 		}
-		if(joy2Btn(1) && faceButtonPressed == false) //low height
+		if(joy2Btn(1) && liftMotorActivated == false) //low height
 		{
-			faceButtonPressed = true;
+			liftMotorActivated = true;
 			StartTask(lift2);
 		}
-		if(joy2Btn(3) && faceButtonPressed == false) //high height
+		if(joy2Btn(3) && liftMotorActivated == false) //high height
 		{
-			faceButtonPressed = true;
+			liftMotorActivated = true;
 			StartTask(lift1);
+		}
+
+		if(joystick.joy2_TopHat == 4) //reset
+		{
+			liftMotorActivated = true;
+			StartTask(liftReset);
 		}
 		// Insert code to have servos and motors respond to joystick and button values.
 
