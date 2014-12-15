@@ -41,13 +41,14 @@
 // In most cases, you may not have to add any code to this function and it will remain "empty".
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-  bool liftMotorActivated = false;
+bool liftMotorActivated = false;
 
 void initializeRobot()
 {
 	// Place code here to sinitialize servos to starting positions.
 	// Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
 	nMotorEncoder(motorLft1) = 0;
+	nMotorEncoder(motorLft2) = 0;
 	return;
 }
 
@@ -104,11 +105,6 @@ task eStop()
 	while(true)
 	{
 		getJoystickSettings(joystick);
-
-		if(joy1Btn(10)) //debug p1 estop
-			PlaySound(soundBlip);
-		if(joy2Btn(10)) //debug p2 estop
-			PlaySound(soundBeepBeep);
 		if(joy1Btn(10) && joy2Btn(10)) //Program will pause everything when E-Stop button (start) hit on both controllers
 		{
 			PlaySound(soundException); //debug estop command
@@ -121,42 +117,109 @@ task eStop()
 task lift1() //high
 {
 
-			while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true))/*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
-			liftMotorActivated = false;
+	bool runLift = true;
+
+	while(runLift == true)
+	{
+		motor[motorLft2] = 50;
+		motor[motorLft1] = 50;
+		if(nMotorEncoder[motorLft2] < -5800)
+		{
+			runLift = false;
+		}
+	}
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	while(nMotorEncoder[motorBm] > -500)
+	{
+		motor[motorBm] = -30;
+	}
+	while(nMotorEncoder[motorBm] > -950)
+	{
+		motor[motorBm] = -20;
+	}
+	motor[motorBm] = 50;
+	Sleep(200);
+	motor[motorBm] = 10;
+	Sleep(700);
+	motor[motorBm] = 0;
+	liftMotorActivated = false;
 }
 
 task lift2() //low
 {
-	while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true))/*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
-			liftMotorActivated = false;
+	bool runLift = true;
+
+	while(runLift == true)
+	{
+		motor[motorLft2] = 50;
+		motor[motorLft1] = 50;
+		if(nMotorEncoder[motorLft2] < -2500)
+		{
+			runLift = false;
+		}
+	}
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	while(nMotorEncoder[motorBm] > -500)
+	{
+		motor[motorBm] = -30;
+	}
+	while(nMotorEncoder[motorBm] > -950)
+	{
+		motor[motorBm] = -20;
+	}
+	motor[motorBm] = 50;
+	Sleep(200);
+	motor[motorBm] = 10;
+	Sleep(700);
+	motor[motorBm] = 0;
+	liftMotorActivated = false;
 }
 
 task lift3() //medium
 {
-	while((nMotorEncoder(motorLft1) < 0) && (liftMotorActivated == true)) /*encoder count @ 0*/
-			{
-				motor[motorLft1] = 20;
-				motor[motorLft2] = 20;
-			}
-			liftMotorActivated = false;
+	bool runLift = true;
+
+	while(runLift == true)
+	{
+		motor[motorLft2] = 50;
+		motor[motorLft1] = 50;
+		if(nMotorEncoder[motorLft2] < -2500)
+		{
+			runLift = false;
+		}
+	}
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	while(nMotorEncoder[motorBm] > -500)
+	{
+		motor[motorBm] = -30;
+	}
+	while(nMotorEncoder[motorBm] > -950)
+	{
+		motor[motorBm] = -20;
+	}
+	motor[motorBm] = 50;
+	Sleep(200);
+	motor[motorBm] = 10;
+	Sleep(700);
+	motor[motorBm] = 0;
+	liftMotorActivated = false;
 }
 
 task liftReset() //stop other lift commands
 {
 	liftMotorActivated = false;
-	while(nMotorEncoder(motorLft1) > 0)
-			{
-				motor[motorLft1] = -20;
-				motor[motorLft2] = -20;
-			}
+	StopTask(lift1);
+	StopTask(lift2);
+	StopTask(lift3);
+	motor[motorBm] = 0;
+	while(nMotorEncoder(motorLft2) > 0)
+	{
+		motor[motorLft1] = -20;
+		motor[motorLft2] = -20;
+	}
 
 }
 
@@ -195,9 +258,9 @@ task main()
 		}
 
 		//rolling goal clamp code
-		if(joy1Btn(4))
+		if(joy1Btn(4) == 1)
 			servo[servo1] = 185;
-		if(joy1Btn(6))
+		if(joy1Btn(6) == 1)
 			servo[servo1] = 0;
 
 		//toggle ball pickup code
@@ -217,17 +280,17 @@ task main()
 
 		//autonomous lift control code
 
-		if((joy2Btn(0) || joy2Btn(2)) && liftMotorActivated == false) //medium height
+		if((joy2Btn(1) == 1|| joy2Btn(3) == 1) && liftMotorActivated == false) //medium height
 		{
 			liftMotorActivated = true;
 			StartTask(lift3);
 		}
-		if(joy2Btn(1) && liftMotorActivated == false) //low height
+		if(joy2Btn(2) == 1 && liftMotorActivated == false) //low height
 		{
 			liftMotorActivated = true;
 			StartTask(lift2);
 		}
-		if(joy2Btn(3) && liftMotorActivated == false) //high height
+		if(joy2Btn(4) == 1 && liftMotorActivated == false) //high height
 		{
 			liftMotorActivated = true;
 			StartTask(lift1);
@@ -235,8 +298,37 @@ task main()
 
 		if(joystick.joy2_TopHat == 4) //reset
 		{
-			liftMotorActivated = true;
 			StartTask(liftReset);
+		}
+		if (liftMotorActivated == false)
+	{
+
+			if (joystick.joy2_y1 > 15 || joystick.joy2_y1 < -15) //If not in deadzone, do motors LEFT
+			{
+				if(joystick.joy2_y1 < -15 && nMotorEncoder[motorLft2] > -720)
+				{
+					if(nMotorEncoder[motorLft2] < -200)
+					{
+						motor[motorLft2] = -20;
+						motor[motorLft1] = -20;
+					}
+					else
+					{
+						motor[motorLft2] = 0;
+						motor[motorLft1] = 0;
+					}
+				}
+				else
+				{
+					motor[motorLft2] = (joystick.joy2_y1)/1.5;
+					motor[motorLft1] = (joystick.joy2_y1)/1.5;
+				}
+			}
+			else
+			{
+				motor[motorLft2] = 0;
+				motor[motorLft1] = 0;
+			}
 		}
 		// Insert code to have servos and motors respond to joystick and button values.
 
