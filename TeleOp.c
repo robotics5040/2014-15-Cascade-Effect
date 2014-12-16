@@ -1,10 +1,11 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S3,     ,               sensorHiTechnicIRSeeker1200)
 #pragma config(Sensor, S4,     ,               sensorCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop, reversed)
-#pragma config(Motor,  mtr_S1_C2_2,     motorL2,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_2,     motorL2,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     motorBlPickup, tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_2,     motorBm,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S2_C1_1,     motorLft1,     tmotorTetrix, openLoop)
@@ -105,7 +106,7 @@ task eStop()
 	while(true)
 	{
 		getJoystickSettings(joystick);
-		if(joy1Btn(10) && joy2Btn(10)) //Program will pause everything when E-Stop button (start) hit on both controllers
+		if(joy1Btn(10) == 1 && joy2Btn(10) == 1) //Program will pause everything when E-Stop button (start) hit on both controllers
 		{
 			PlaySound(soundException); //debug estop command
 			stopMotors();
@@ -144,6 +145,7 @@ task lift1() //high
 	Sleep(700);
 	motor[motorBm] = 0;
 	liftMotorActivated = false;
+	StopTask(lift1);
 }
 
 task lift2() //low
@@ -175,6 +177,7 @@ task lift2() //low
 	Sleep(700);
 	motor[motorBm] = 0;
 	liftMotorActivated = false;
+	StopTask(lift2);
 }
 
 task lift3() //medium
@@ -206,6 +209,7 @@ task lift3() //medium
 	Sleep(700);
 	motor[motorBm] = 0;
 	liftMotorActivated = false;
+	StopTask(lift3);
 }
 
 task liftReset() //stop other lift commands
@@ -301,7 +305,7 @@ task main()
 			StartTask(liftReset);
 		}
 		if (liftMotorActivated == false)
-	{
+		{
 
 			if (joystick.joy2_y1 > 15 || joystick.joy2_y1 < -15) //If not in deadzone, do motors LEFT
 			{
@@ -328,6 +332,22 @@ task main()
 			{
 				motor[motorLft2] = 0;
 				motor[motorLft1] = 0;
+			}
+
+			if (joystick.joy2_y2 > 15 || joystick.joy2_y2 < -15) //If not in deadzone, do motors LEFT
+			{
+				if(joystick.joy2_y2 < -15 && nMotorEncoder[motorBm] > -950)
+				{
+					motor[motorBm] = -10;
+				}
+				else
+				{
+					motor[motorBm] = (joystick.joy2_y2)/3;
+				}
+			}
+			else
+			{
+				motor[motorBm] = 0;
 			}
 		}
 		// Insert code to have servos and motors respond to joystick and button values.
