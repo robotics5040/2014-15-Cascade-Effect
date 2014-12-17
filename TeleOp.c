@@ -336,9 +336,16 @@ task main()
 
 			if (joystick.joy2_y2 > 15 || joystick.joy2_y2 < -15) //If not in deadzone, do motors LEFT
 			{
-				if(joystick.joy2_y2 < -15 && nMotorEncoder[motorBm] > -950)
+				if(joystick.joy2_y2 < -15 && nMotorEncoder[motorBm] < -950)
 				{
-					motor[motorBm] = -10;
+					if(nMotorEncoder[motorLft2] < -1000)
+					{
+						motor[motorBm] = -10;
+					}
+					else
+					{
+						motor[motorBm] = 0;
+					}
 				}
 				else
 				{
