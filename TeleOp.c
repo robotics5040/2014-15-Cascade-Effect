@@ -1,5 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     ,               sensorHiTechnicIRSeeker1200)
 #pragma config(Sensor, S4,     ,               sensorCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
@@ -9,7 +11,7 @@
 #pragma config(Motor,  mtr_S1_C3_1,     motorBlPickup, tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_2,     motorBm,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S2_C1_1,     motorLft1,     tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S2_C1_2,     motorLft2,     tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S2_C1_2,     motorLft2,     tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S1_C4_1,    servo1,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
@@ -263,9 +265,9 @@ task main()
 
 		//rolling goal clamp code
 		if(joy1Btn(4) == 1)
-			servo[servo1] = 185;
+			servo[servo2] = 185;
 		if(joy1Btn(6) == 1)
-			servo[servo1] = 0;
+			servo[servo2] = 0;
 
 		//toggle ball pickup code
 		if(joy1Btn(5))
