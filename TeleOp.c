@@ -264,10 +264,17 @@ task main()
 		}
 
 		//rolling goal clamp code
+<<<<<<< HEAD
 		if(joy1Btn(4) == 1)
 			servo[servo2] = 185;
 		if(joy1Btn(6) == 1)
 			servo[servo2] = 0;
+=======
+		if(joy1Btn(8) == 1)
+			servo[servo4] = 185;
+		if(joy1Btn(6) == 1)
+			servo[servo4] = 0;
+>>>>>>> origin/master
 
 		//toggle ball pickup code
 		if(joy1Btn(5))
