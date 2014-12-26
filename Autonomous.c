@@ -104,9 +104,9 @@ void turn(int dist, int powerL, int powerR)
 {
 	if (powerL < powerR)
 	{
-		nMotorEncoder[motorR2] = 0;
+		nMotorEncoder[motorL2] = 0;
 
-		while (abs(nMotorEncoder[motorR2]) <= abs(dist))
+		while (abs(nMotorEncoder[motorL2]) <= abs(dist))
 		{
 			motor[motorR1] = powerR;
 			motor[motorR2] = powerR;
@@ -116,9 +116,9 @@ void turn(int dist, int powerL, int powerR)
 	}
 	else
 	{
-		nMotorEncoder[motorL2] = 0;
+		nMotorEncoder[motorR2] = 0;
 
-		while (abs(nMotorEncoder[motorL2]) <= abs(dist))
+		while (abs(nMotorEncoder[motorR2]) <= abs(dist))
 		{
 			motor[motorR1] = powerR;
 			motor[motorR2] = powerR;
@@ -146,11 +146,90 @@ void stopMotors()
 //Travel from the scoring zone to the tubes
 void scoreToTubes()
 {
-  forward(2100, 70);
-  turn(1400, 60, -10);
-  forward(2000, 50);
-  turn(700, -10, 60);
-  forward(5700, 50);
+  forward(2100, -70);
+  turn(1400, 10, -60);
+  forward(2000, -50);
+  turn(1500, -60, 10);
+  forward(3600, -40);
+}
+
+//Score in medium tube
+void dumpMed()
+{
+	bool runLift = true;
+
+	while(runLift == true)
+	{
+		motor[motorLft2] = 50;
+	 	motor[motorLft1] = 50;
+		if(nMotorEncoder[motorLft2] < -2500)
+		{
+			runLift = false;
+		}
+	}
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	while(nMotorEncoder[motorBm] > -650)
+	{
+		motor[motorBm] = -30;
+	}
+	while(nMotorEncoder[motorBm] > -1000)
+	{
+		motor[motorBm] = -1;
+	}
+	motor[motorBm] = 10;
+	Sleep(700);
+	motor[motorBm] = 0;
+
+	Sleep(1000);
+
+	int LiftRunning = 1;
+
+	while(nMotorEncoder[motorBm] < -650)
+	{
+		motor[motorBm] = 30;
+	}
+	while(nMotorEncoder[motorBm] < -300)
+	{
+		motor[motorBm] = 1;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(nMotorEncoder[motorBm] < -25)
+	{
+		motor[motorBm] = 7;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(LiftRunning == 1)
+	{
+		if(nMotorEncoder[motorLft2] > -720)
+		{
+			if(nMotorEncoder[motorLft2] < -200)
+			{
+				motor[motorLft2] = -20;
+				motor[motorLft1] = -20;
+			}
+			else
+			{
+				motor[motorLft2] = 0;
+				motor[motorLft1] = 0;
+				LiftRunning = 0;
+			}
+		}
+		else
+		{
+			motor[motorLft2] = -40;
+			motor[motorLft1] = -40;
+		}
+	}
+}
+
+void tubeMed()
+{
+  turn(1550, 50, -50);
+  forward(1300, -50);
+	dumpMed();
 }
 
 task main()
@@ -163,6 +242,8 @@ task main()
 
   if (actS == "score" && act1 == "tubes")
   	scoreToTubes();
+
+  tubeMed();
 
   stopMotors();
 }
