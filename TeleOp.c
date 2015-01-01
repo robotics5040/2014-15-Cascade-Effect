@@ -149,6 +149,12 @@ task lift1() //high
 	motor[motorBm] = 10;
 	Sleep(700);
 	motor[motorBm] = 0;
+	motor[motorLft2] = 30;
+	motor[motorLft1] = 30;
+	Sleep(300);
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	servo[servo3] = 120;
 	liftMotorActivated = false;
 	StopTask(lift1);
 }
@@ -181,6 +187,7 @@ task lift2() //low
 	motor[motorBm] = 10;
 	Sleep(700);
 	motor[motorBm] = 0;
+
 	liftMotorActivated = false;
 	StopTask(lift2);
 }
@@ -211,6 +218,12 @@ task lift3() //medium
 	motor[motorBm] = 10;
 	Sleep(700);
 	motor[motorBm] = 0;
+	motor[motorLft2] = 30;
+	motor[motorLft1] = 30;
+	Sleep(300);
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
+	servo[servo3] = 120;
 	liftMotorActivated = false;
 	StopTask(lift3);
 }
@@ -231,7 +244,7 @@ task liftReset() //stop other lift commands
   	Sleep(300);
   	while(nMotorEncoder[motorBm] < -25)
   	{
-  		motor[motorBm] = 7;
+  		motor[motorBm] = 10;
   	}
   	motor[motorBm] = 0;
   	Sleep(300);
@@ -264,7 +277,7 @@ task liftReset() //stop other lift commands
 task main()
 {
 	initializeRobot();
-
+	bool LBpressed = false;
 	bool ballPickupEnabled = false;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
@@ -319,8 +332,9 @@ task main()
 		}
 
 		//toggle ball pickup code
-		if(joy1Btn(5))
+		if(joy1Btn(5) == 1 && LBpressed == false)
 		{
+			LBpressed = true;
 			if(ballPickupEnabled == false)
 			{
 				motor[motorBlPickup] = 50;
@@ -331,6 +345,11 @@ task main()
 				motor[motorBlPickup] = 0;
 				ballPickupEnabled = false;
 			}
+
+		}
+		if(joy1Btn(5) == 0)
+		{
+			LBpressed = false;
 		}
 
 		//autonomous lift control code
@@ -340,11 +359,7 @@ task main()
 			liftMotorActivated = true;
 			StartTask(lift3);
 		}
-		if(joy2Btn(2) == 1 && liftMotorActivated == false) //low height
-		{
-			liftMotorActivated = true;
-			StartTask(lift2);
-		}
+
 		if(joy2Btn(4) == 1 && liftMotorActivated == false) //high height
 		{
 			liftMotorActivated = true;
@@ -388,21 +403,7 @@ task main()
 
 			if (joystick.joy2_y2 > 15 || joystick.joy2_y2 < -15) //If not in deadzone, do motors LEFT
 			{
-				if(joystick.joy2_y2 < -15 && nMotorEncoder[motorBm] < -950)
-				{
-					if(nMotorEncoder[motorLft2] < -1000)
-					{
-						motor[motorBm] = -10;
-					}
-					else
-					{
-						motor[motorBm] = 0;
-					}
-				}
-				else
-				{
 					motor[motorBm] = (joystick.joy2_y2)/3;
-				}
 			}
 			else
 			{
