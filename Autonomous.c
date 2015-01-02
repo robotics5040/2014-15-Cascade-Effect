@@ -1,7 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
-#pragma config(Sensor, S3,     ,               sensorHiTechnicIRSeeker1200)
-#pragma config(Sensor, S4,     ,               sensorCustom)
+#pragma config(Sensor, S4,     ,               sensorHiTechnicIRSeeker1200)
 #pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop)
@@ -20,7 +19,7 @@
 
   string actS = "score"; //Starting place
   string act1 = "tubes"; //First action
-  string act2 = "dropL"; //Second action
+  string act2 = "dropMed"; //Second action
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -144,7 +143,7 @@ void stopMotors()
 */
 
 //Travel from the scoring zone to the tubes
-void scoreToTubes()
+void lowerToTubes()
 {
   forward(2100, -70);
   turn(1400, 10, -60);
@@ -232,6 +231,19 @@ void tubeMed()
 	dumpMed();
 }
 
+void lowerIR()
+{
+	//TODO: Get IR position
+
+	//Position 1
+	forward(2100, -65);
+  turn(1550, -50, 50);
+  forward(1000, -35);
+  turn(1550, -50, 50);
+  forward(1000, -35);
+  turn(1550, -50, 50);
+}
+
 task main()
 {
   initializeRobot();
@@ -240,10 +252,17 @@ task main()
 
   //TODO: Selection Menu
 
-  if (actS == "score" && act1 == "tubes")
-  	scoreToTubes();
+  if (actS == "lower" && act1 == "tubes")
+  {
+  	lowerToTubes();
 
-  tubeMed();
+  	tubeMed();
+  }
+
+  if (actS == "lower" && act1 == "IR")
+  {
+  	lowerIR();
+  }
 
   stopMotors();
 }
