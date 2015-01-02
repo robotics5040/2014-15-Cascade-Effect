@@ -186,7 +186,8 @@ task main()
 			}
 			if(joystick.joy2_TopHat == -1)
 			{
-				p2DriveOverride = false;
+				p2DpadPressed = false;
+
 			}
 		}
 		// Insert code to have servos and motors respond to joystick and button values.
