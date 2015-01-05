@@ -279,6 +279,7 @@ task main()
 	initializeRobot();
 	bool LBpressed = false;
 	bool ballPickupEnabled = false;
+	nMotorEncoder[motorLft2] = 0;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
 

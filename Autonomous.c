@@ -253,9 +253,11 @@ void dumpCenter()
 	Sleep(700);
 	motor[motorBm] = 0;
 	Sleep(300);
-	servo[servo3] = 160;
+	servo[servo3] = 180;
 	Sleep(1000);
-
+	forward(400, 35);
+	stopMotors();
+	servo[servo3] = 0;
 	int LiftRunning = 1;
 
 	while(nMotorEncoder[motorBm] < -650)
@@ -358,7 +360,7 @@ void lowerIR()
 	  turn(1550, -50, 50);
 	  forward(1000, -35);
 	  turn(1550, 50, -50);
-	  forward(1400, -35);
+	  forward(1450, -35);
 	  while(SensorValue[sensorIR] != 5)
 	  {
 	  	motor[motorR1] = -50;
@@ -366,8 +368,8 @@ void lowerIR()
 			motor[motorL1] = 50;
 			motor[motorL2] = 50;
 	  }
-	  turn(780, 50, -50);
-	  forward(1000, -35);
+	  turn(1560, 50, -50);
+	  forward(450, -35);
 	  stopMotors();
 	  servo[servo3] = 0;
 	  dumpCenter();
@@ -375,6 +377,13 @@ void lowerIR()
 	else if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 8 || ir4 == 9))
 	{
 		nxtDisplayBigTextLine(1, "Pos 2");
+		forward(1100, -65);
+	  turn(1550, -50, 50);
+		forward(1100, -35);
+		turn(2425, 50, -50);
+		forward(1400, -35);
+		stopMotors();
+		dumpCenter();
 	}
 	else if(ir1 == 6 && ir2 == 5 && ir3 == 7 && (ir4 == 9 || ir4 == 8))
 	{
