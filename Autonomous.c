@@ -234,30 +234,40 @@ void dumpCenter()
 	{
 		motor[motorLft2] = 50;
 	 	motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -5800)
+		if(nMotorEncoder[motorLft2] < -5850)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
+	servo[servo3] = 180;
 	while(nMotorEncoder[motorBm] > -650)
 	{
 		motor[motorBm] = -30;
 	}
+
 	while(nMotorEncoder[motorBm] > -800)
 	{
 		motor[motorBm] = -1;
 	}
 	motor[motorBm] = 10;
-	Sleep(700);
+	Sleep(500);
 	motor[motorBm] = 0;
 	Sleep(300);
-	servo[servo3] = 180;
 	Sleep(1000);
+	motor[motorBm] = 20;
+	Sleep(250);
+	motor[motorBm] = -20;
+	Sleep(250);
+	motor[motorBm] = 20;
+	Sleep(250);
+	motor[motorBm] = -20;
+	Sleep(250);
+	servo[servo3] = 0;
 	forward(400, 35);
 	stopMotors();
-	servo[servo3] = 0;
+
 	int LiftRunning = 1;
 
 	while(nMotorEncoder[motorBm] < -650)
@@ -280,7 +290,7 @@ void dumpCenter()
 	{
 		if(nMotorEncoder[motorLft2] > -720)
 		{
-			if(nMotorEncoder[motorLft2] < -200)
+			if(nMotorEncoder[motorLft2] < -150)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -317,14 +327,9 @@ void lowerIR()
 
 	int ir1 = SensorValue[sensorIR];
 
-	while (ir1 == 0)
-	{
-		ir1 = SensorValue[sensorIR];
-	}
-
 	while(nMotorEncoder[motorIR] > -48)
 	{
-		motor[motorIR] = -20;
+		motor[motorIR] = -10;
 	}
 
 	motor[motorIR] = 0;
@@ -333,7 +338,7 @@ void lowerIR()
 
 	while(nMotorEncoder[motorIR] < 48)
 	{
-		motor[motorIR] = 20;
+		motor[motorIR] = 10;
 	}
 
 	motor[motorIR] = 0;
@@ -342,7 +347,7 @@ void lowerIR()
 
 	while(nMotorEncoder[motorIR] < 94)
 	{
-		motor[motorIR] = 20;
+		motor[motorIR] = 10;
 	}
 
 	motor[motorIR] = 0;
@@ -354,6 +359,13 @@ void lowerIR()
 	nxtDisplayBigTextLine(5, "%d", ir3);
 	nxtDisplayBigTextLine(7, "%d", ir4);
 
+	while(nMotorEncoder[motorIR] > 0)
+	{
+		motor[motorIR] = -10;
+	}
+
+	motor[motorIR] = 0;
+
 	if((ir1 == 4 || ir1 == 5) && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7 || ir3 == 0 || ir3 == 7) && (ir4 == 5 || ir4 == 4|| ir4 == 6))
 	{
 		forward(1200, -65);
@@ -361,41 +373,83 @@ void lowerIR()
 	  forward(1000, -35);
 	  turn(1550, 50, -50);
 	  forward(1450, -35);
-	  while(SensorValue[sensorIR] != 5)
+	  turn(500, 50, -50);
+		while(SensorValue[sensorIR] != 5)
 	  {
-	  	motor[motorR1] = -50;
-			motor[motorR2] = -50;
-			motor[motorL1] = 50;
-			motor[motorL2] = 50;
+	  	motor[motorR1] = -40;
+			motor[motorR2] = -40;
+			motor[motorL1] = 40;
+			motor[motorL2] = 40;
 	  }
-	  turn(1560, 50, -50);
 	  forward(450, -35);
 	  stopMotors();
 	  servo[servo3] = 0;
 	  dumpCenter();
+	  while(nMotorEncoder[motorIR] > 0)
+		{
+			motor[motorIR] = -20;
+		}
 	}
-	else if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 8 || ir4 == 9))
+	else if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 8 || ir4 == 7))
 	{
 		nxtDisplayBigTextLine(1, "Pos 2");
 		forward(1100, -65);
-	  turn(1550, -50, 50);
-		forward(1100, -35);
-		turn(2425, 50, -50);
-		forward(1400, -35);
+	  turn(1450, -50, 50);
+		forward(1050, -35);
+		turn(1450, 50, -50);
+		while(SensorValue[sensorIR] != 5)
+	  {
+	  	motor[motorR1] = -40;
+			motor[motorR2] = -40;
+			motor[motorL1] = 40;
+			motor[motorL2] = 40;
+	  }
+
+		forward(1075, -35);
 		stopMotors();
 		dumpCenter();
+		while(nMotorEncoder[motorIR] > 0)
+		{
+			motor[motorIR] = -20;
+		}
 	}
 	else if(ir1 == 6 && ir2 == 5 && ir3 == 7 && (ir4 == 9 || ir4 == 8))
 	{
 		nxtDisplayBigTextLine(1, "Pos 3");
+
+		turn(550, 50, -50);
+	  forward(1500, -35);
+	  turn(750, -50, 50);
+
+
+	  forward(350, -35);
+	  stopMotors();
+	  dumpCenter();
+
 	}
 	else
 	{
-		nxtDisplayBigTextLine(1, "%d", ir1);
-		nxtDisplayBigTextLine(3, "%d", ir2);
-		nxtDisplayBigTextLine(5, "%d", ir3);
-		nxtDisplayBigTextLine(7, "%d", ir4);
-		wait10Msec(800);
+		forward(1000, -65);
+	  turn(1500, -50, 50);
+	  forward(1600, -35);
+	  turn(1550, 50, -50);
+	  forward(1800, -35);
+	  turn(200, 50, -50);
+		while(SensorValue[sensorIR] != 5)
+	  {
+	  	motor[motorR1] = -40;
+			motor[motorR2] = -40;
+			motor[motorL1] = 40;
+			motor[motorL2] = 40;
+	  }
+	  forward(1050, -35);
+	  stopMotors();
+	  servo[servo3] = 0;
+	  dumpCenter();
+	  while(nMotorEncoder[motorIR] > 0)
+		{
+			motor[motorIR] = -20;
+		}
 	}
 }
 
@@ -406,18 +460,10 @@ task main()
   //waitForStart(); // Wait for the beginning of autonomous pha
 
   //TODO: Selection Menu
+	nMotorEncoder[motorBm] = 0;
+	nMotorEncoder[motorLft2] = 0;
 
-  if (actS == "lower" && act1 == "tubes")
-  {
-  	lowerToTubes();
-		servo[servo3] = 0;
-  	tubeMed();
-  }
+  lowerIR();
+	stopMotors();
 
-  if (actS == "lower" && act1 == "IR")
-  {
-  	lowerIR();
-  }
-
-  stopMotors();
 }
