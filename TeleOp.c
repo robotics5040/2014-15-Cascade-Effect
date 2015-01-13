@@ -102,13 +102,15 @@ void stopMotors()
 	motor[motorLft1] = 0;
 	motor[motorLft2] = 0;
 }
+
 task resetFServos()
 {
 	servo[servo5] = 112;
 	Sleep(500);
 	servo[servo5] = 128;
 }
-task eStop()
+
+task eStop() //Emergency Stop (Complete Program Stop)
 {
 	while(true)
 	{
@@ -122,6 +124,22 @@ task eStop()
 	}
 }
 
+task eReset() //Emergency Reset (Ends All Subroutines)
+{
+	while(true)
+	{
+		getJoystickSettings(joystick);
+		if(joy1Btn(9) == 1 || joy2Btn(9) == 1) //Program will reset subroutines when E-Reset button (select) hit on one of the controllers
+		{
+			PlaySound(soundException); //debug ereset command
+			stopMotors();
+			StopTask(lift1);
+			StopTask(lift2);
+			StopTask(lift3);
+			StopTask(liftReset);
+		}
+	}
+}
 task lift1() //high
 {
 
@@ -232,45 +250,45 @@ task liftReset() //stop other lift commands
 {
 	int LiftRunning = 1;
 
-  	while(nMotorEncoder[motorBm] < -650)
-  	{
-  		motor[motorBm] = 30;
-  	}
-  	while(nMotorEncoder[motorBm] < -300)
-  	{
-  		motor[motorBm] = 1;
-  	}
-  	motor[motorBm] = 0;
-  	Sleep(300);
-  	while(nMotorEncoder[motorBm] < -25)
-  	{
-  		motor[motorBm] = 10;
-  	}
-  	motor[motorBm] = 0;
-  	Sleep(300);
-  	while(LiftRunning == 1)
-  	{
-  	if(nMotorEncoder[motorLft2] > -720)
-				{
-					if(nMotorEncoder[motorLft2] < -200)
-					{
-						motor[motorLft2] = -20;
-						motor[motorLft1] = -20;
-					}
-					else
-					{
-						motor[motorLft2] = 0;
-						motor[motorLft1] = 0;
-						LiftRunning = 0;
-						liftMotorActivated = false;
-					}
-				}
-				else
-				{
-					motor[motorLft2] = -40;
-					motor[motorLft1] = -40;
-				}
+	while(nMotorEncoder[motorBm] < -650)
+	{
+		motor[motorBm] = 30;
+	}
+	while(nMotorEncoder[motorBm] < -300)
+	{
+		motor[motorBm] = 1;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(nMotorEncoder[motorBm] < -25)
+	{
+		motor[motorBm] = 10;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(LiftRunning == 1)
+	{
+		if(nMotorEncoder[motorLft2] > -720)
+		{
+			if(nMotorEncoder[motorLft2] < -200)
+			{
+				motor[motorLft2] = -20;
+				motor[motorLft1] = -20;
 			}
+			else
+			{
+				motor[motorLft2] = 0;
+				motor[motorLft1] = 0;
+				LiftRunning = 0;
+				liftMotorActivated = false;
+			}
+		}
+		else
+		{
+			motor[motorLft2] = -40;
+			motor[motorLft1] = -40;
+		}
+	}
 
 }
 
@@ -282,7 +300,7 @@ task main()
 	nMotorEncoder[motorLft2] = 0;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
-
+	StartTake(eReset);// start ereset task
 	while (true)
 	{
 		getJoystickSettings(joystick);
@@ -404,7 +422,7 @@ task main()
 
 			if (joystick.joy2_y2 > 15 || joystick.joy2_y2 < -15) //If not in deadzone, do motors LEFT
 			{
-					motor[motorBm] = (joystick.joy2_y2)/3;
+				motor[motorBm] = (joystick.joy2_y2)/3;
 			}
 			else
 			{
