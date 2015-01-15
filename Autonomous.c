@@ -33,7 +33,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//#include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
+#include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ void dumpMed()
 	{
 		motor[motorLft2] = 50;
 	 	motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -2500)
+		if(nMotorEncoder[motorLft2] < -2600)
 		{
 			runLift = false;
 		}
@@ -234,7 +234,7 @@ void dumpCenter()
 	{
 		motor[motorLft2] = 50;
 	 	motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -5850)
+		if(nMotorEncoder[motorLft2] < -6150)
 		{
 			runLift = false;
 		}
@@ -290,7 +290,7 @@ void dumpCenter()
 	{
 		if(nMotorEncoder[motorLft2] > -720)
 		{
-			if(nMotorEncoder[motorLft2] < -150)
+			if(nMotorEncoder[motorLft2] < -300)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -366,36 +366,12 @@ void lowerIR()
 
 	motor[motorIR] = 0;
 
-	if((ir1 == 4 || ir1 == 5) && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7 || ir3 == 0 || ir3 == 7) && (ir4 == 5 || ir4 == 4|| ir4 == 6))
-	{
-		forward(1200, -65);
-	  turn(1550, -50, 50);
-	  forward(1000, -35);
-	  turn(1550, 50, -50);
-	  forward(1450, -35);
-	  turn(500, 50, -50);
-		while(SensorValue[sensorIR] != 5)
-	  {
-	  	motor[motorR1] = -40;
-			motor[motorR2] = -40;
-			motor[motorL1] = 40;
-			motor[motorL2] = 40;
-	  }
-	  forward(450, -35);
-	  stopMotors();
-	  servo[servo3] = 0;
-	  dumpCenter();
-	  while(nMotorEncoder[motorIR] > 0)
-		{
-			motor[motorIR] = -20;
-		}
-	}
-	else if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 8 || ir4 == 7))
+	if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 9 || ir4 == 8))
 	{
 		nxtDisplayBigTextLine(1, "Pos 2");
-		forward(1100, -65);
+		forward(500, -65);
 	  turn(1450, -50, 50);
-		forward(1050, -35);
+		forward(1100, -35);
 		turn(1450, 50, -50);
 		while(SensorValue[sensorIR] != 5)
 	  {
@@ -405,7 +381,7 @@ void lowerIR()
 			motor[motorL2] = 40;
 	  }
 
-		forward(1075, -35);
+		forward(1700, -45);
 		stopMotors();
 		dumpCenter();
 		while(nMotorEncoder[motorIR] > 0)
@@ -435,12 +411,12 @@ void lowerIR()
 	  turn(1550, 50, -50);
 	  forward(1800, -35);
 	  turn(200, 50, -50);
-		while(SensorValue[sensorIR] != 5)
+		while(SensorValue[sensorIR] != 6)
 	  {
-	  	motor[motorR1] = -40;
-			motor[motorR2] = -40;
-			motor[motorL1] = 40;
-			motor[motorL2] = 40;
+	  	motor[motorR1] = -30;
+			motor[motorR2] = -30;
+			motor[motorL1] = 30;
+			motor[motorL2] = 30;
 	  }
 	  forward(1050, -35);
 	  stopMotors();
@@ -460,9 +436,13 @@ task main()
   //waitForStart(); // Wait for the beginning of autonomous pha
 
   //TODO: Selection Menu
+	initializeRobot();
 	nMotorEncoder[motorBm] = 0;
 	nMotorEncoder[motorLft2] = 0;
 
+	waitForStart();
+	servo[servo4] = 240;
+	servo[servo5] = 80;
   lowerIR();
 	stopMotors();
 
