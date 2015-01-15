@@ -273,7 +273,22 @@ task liftReset() //stop other lift commands
 	}
 
 }
-
+task eReset() //Emergency Reset (Ends All Subroutines)
+{
+	while(true)
+	{
+		getJoystickSettings(joystick);
+		if(joy1Btn(9) == 1 || joy2Btn(9) == 1) //Program will reset subroutines when E-Reset button (select) hit on one of the controllers
+		{
+			PlaySound(soundException); //debug ereset command
+			stopMotors();
+			StopTask(lift1);
+			StopTask(lift2);
+			StopTask(lift3);
+			StopTask(liftReset);
+		}
+	}
+}
 task main()
 {
 	initializeRobot();
@@ -281,34 +296,71 @@ task main()
 	bool ballPickupEnabled = false;
 	bool p2DriveOverride = false;
 	bool p2DpadPressed = false;
+	bool driveDirectionSwapped = false;
+	nMotorEncoder[motorLft2] = 0;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
-
+	StartTask(eReset);// start ereset task
 	while (true)
 	{
 		getJoystickSettings(joystick);
 		if(p2DriveOverride == false)
 		{
-			if (joystick.joy1_y1 > 8 || joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
+			if(joy1Btn(11) == 1)
 			{
-				motor[motorL1] = (joystick.joy1_y1)/1.5;
-				motor[motorL2] = (joystick.joy1_y1)/1.5;
+				driveDirectionSwapped = false;
 			}
-			else
+			if(joy1Btn(12) == 1)
 			{
-				motor[motorL1] = 0;
-				motor[motorL2] = 0;
+				driveDirectionSwapped = true;
 			}
+			if(driveDirectionSwapped == false)
+			{
+				if (joystick.joy1_y1 > 8 || joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
+				{
+					motor[motorL1] = (joystick.joy1_y1)/1.5;
+					motor[motorL2] = (joystick.joy1_y1)/1.5;
+				}
+				else
+				{
+					motor[motorL1] = 0;
+					motor[motorL2] = 0;
+				}
 
-			if (joystick.joy1_y2 > 8 || joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
-			{
-				motor[motorR1] = (joystick.joy1_y2)/1.5;
-				motor[motorR2] = (joystick.joy1_y2)/1.5;
+				if (joystick.joy1_y2 > 8 || joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
+				{
+					motor[motorR1] = (joystick.joy1_y2)/1.5;
+					motor[motorR2] = (joystick.joy1_y2)/1.5;
+				}
+				else
+				{
+					motor[motorR1] = 0;
+					motor[motorR2] = 0;
+				}
 			}
 			else
 			{
-				motor[motorR1] = 0;
-				motor[motorR2] = 0;
+				if (joystick.joy1_y1 > 8 || joystick.joy1_y1 < -8) //If not in deadzone, do motors LEFT
+				{
+					motor[motorR1] = -(joystick.joy1_y1)/1.5;
+					motor[motorR2] = -(joystick.joy1_y1)/1.5;
+				}
+				else
+				{
+					motor[motorR1] = 0;
+					motor[motorR2] = 0;
+				}
+
+				if (joystick.joy1_y2 > 8 || joystick.joy1_y2 < -8) //If not in deadzone, do motors RIGHT
+				{
+					motor[motorL1] = -(joystick.joy1_y2)/1.5;
+					motor[motorL2] = -(joystick.joy1_y2)/1.5;
+				}
+				else
+				{
+					motor[motorL1] = 0;
+					motor[motorL2] = 0;
+				}
 			}
 		}
 
@@ -371,6 +423,7 @@ task main()
 		LBpressed = true;
 		if(ballPickupEnabled == false)
 		{
+			servo[servo3] = 120;
 			motor[motorBlPickup] = 50;
 			ballPickupEnabled = true;
 		}
