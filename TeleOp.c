@@ -124,22 +124,7 @@ task eStop() //Emergency Stop (Complete Program Stop)
 	}
 }
 
-task eReset() //Emergency Reset (Ends All Subroutines)
-{
-	while(true)
-	{
-		getJoystickSettings(joystick);
-		if(joy1Btn(9) == 1 || joy2Btn(9) == 1) //Program will reset subroutines when E-Reset button (select) hit on one of the controllers
-		{
-			PlaySound(soundException); //debug ereset command
-			stopMotors();
-			StopTask(lift1);
-			StopTask(lift2);
-			StopTask(lift3);
-			StopTask(liftReset);
-		}
-	}
-}
+
 task lift1() //high
 {
 
@@ -291,7 +276,22 @@ task liftReset() //stop other lift commands
 	}
 
 }
-
+task eReset() //Emergency Reset (Ends All Subroutines)
+{
+	while(true)
+	{
+		getJoystickSettings(joystick);
+		if(joy1Btn(9) == 1 || joy2Btn(9) == 1) //Program will reset subroutines when E-Reset button (select) hit on one of the controllers
+		{
+			PlaySound(soundException); //debug ereset command
+			stopMotors();
+			StopTask(lift1);
+			StopTask(lift2);
+			StopTask(lift3);
+			StopTask(liftReset);
+		}
+	}
+}
 task main()
 {
 	initializeRobot();
@@ -300,7 +300,7 @@ task main()
 	nMotorEncoder[motorLft2] = 0;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
-	StartTake(eReset);// start ereset task
+	StartTask(eReset);// start ereset task
 	while (true)
 	{
 		getJoystickSettings(joystick);
