@@ -103,12 +103,7 @@ void stopMotors()
 	motor[motorLft2] = 0;
 }
 
-task resetFServos()
-{
-	servo[servo5] = 112;
-	Sleep(500);
-	servo[servo5] = 128;
-}
+
 
 task eStop() //Emergency Stop (Complete Program Stop)
 {
@@ -141,7 +136,7 @@ task lift1() //high
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	while(nMotorEncoder[motorBm] > -500)
+	while(nMotorEncoder[motorBm] > -600)
 	{
 		motor[motorBm] = -40;
 	}
@@ -177,9 +172,9 @@ task lift2() //low
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	while(nMotorEncoder[motorBm] > -500)
+	while(nMotorEncoder[motorBm] > -600)
 	{
-		motor[motorBm] = -30;
+		motor[motorBm] = -40;
 	}
 	while(nMotorEncoder[motorBm] > -950)
 	{
@@ -210,7 +205,7 @@ task lift3() //medium
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	while(nMotorEncoder[motorBm] > -500)
+	while(nMotorEncoder[motorBm] > -600)
 	{
 		motor[motorBm] = -40;
 	}
@@ -331,13 +326,13 @@ task main()
 
 		if(joy1Btn(8) == 1)
 		{
-			servo[servo4] = 20;
-			servo[servo5] = 138;
+			servo[servo4] = 240;
+			servo[servo5] = 80;
 		}
 		if(joy1Btn(6) == 1)
 		{
-			servo[servo4] = 180;
-			StartTask(resetFServos);
+			servo[servo4] = 172;
+			servo[servo5] = 150;
 		}
 		if(joy2Btn(8) == 1)
 		{

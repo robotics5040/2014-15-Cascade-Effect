@@ -66,6 +66,9 @@ void initializeRobot()
 */
 
 //Travel set rotations
+int pos1 = 0;
+int pos2 = 0;
+int pos3 = 0;
 void forward(int dist, int power)
 {
 	nMotorEncoder[motorR2] = 0;
@@ -150,7 +153,63 @@ void lowerToTubes()
   turn(1500, -60, 10);
   forward(3600, -40);
 }
-
+void kickstand()
+{
+	if(pos3 == 1)
+	{
+	turn(1350, 50, -50);
+	stopMotors();
+	Sleep(1000);
+	forward(1100, -35);
+	turn(1300, -50, 50);
+	motor[motorR1] = -80;
+	motor[motorR2] = -80;
+	motor[motorL1] = -80;
+	motor[motorL2] = -80;
+	Sleep(1500);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	stopMotors();
+	}
+	if(pos2 == 1)
+	{
+	turn(1350, 50, -50);
+	stopMotors();
+	Sleep(1000);
+	forward(1100, -35);
+	turn(1400, -50, 50);
+	motor[motorR1] = -80;
+	motor[motorR2] = -80;
+	motor[motorL1] = -80;
+	motor[motorL2] = -80;
+	Sleep(1500);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	stopMotors();
+	}
+	if(pos1 == 1)
+	{
+	turn(1350, 50, -50);
+	stopMotors();
+	Sleep(1000);
+	forward(1100, -35);
+	turn(1300, -50, 50);
+	motor[motorR1] = -80;
+	motor[motorR2] = -80;
+	motor[motorL1] = -80;
+	motor[motorL2] = -80;
+	Sleep(1500);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	stopMotors();
+	}
+}
 //Score in medium tube
 void dumpMed()
 {
@@ -160,7 +219,7 @@ void dumpMed()
 	{
 		motor[motorLft2] = 50;
 	 	motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -2600)
+		if(nMotorEncoder[motorLft2] < -2400)
 		{
 			runLift = false;
 		}
@@ -204,7 +263,7 @@ void dumpMed()
 	{
 		if(nMotorEncoder[motorLft2] > -720)
 		{
-			if(nMotorEncoder[motorLft2] < -200)
+			if(nMotorEncoder[motorLft2] < -100)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -265,7 +324,7 @@ void dumpCenter()
 	motor[motorBm] = -20;
 	Sleep(250);
 	servo[servo3] = 0;
-	forward(400, 35);
+	forward(600, 35);
 	stopMotors();
 
 	int LiftRunning = 1;
@@ -290,7 +349,7 @@ void dumpCenter()
 	{
 		if(nMotorEncoder[motorLft2] > -720)
 		{
-			if(nMotorEncoder[motorLft2] < -300)
+			if(nMotorEncoder[motorLft2] < -50)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -299,6 +358,7 @@ void dumpCenter()
 			{
 				motor[motorLft2] = 0;
 				motor[motorLft1] = 0;
+				kickstand();
 				LiftRunning = 0;
 			}
 		}
@@ -320,7 +380,8 @@ void tubeMed()
 
 void lowerIR()
 {
-	forward(1600, -65);
+	forward(1600, -30);
+
 	stopMotors();
 
 	nMotorEncoder[motorIR] = 0;
@@ -366,19 +427,20 @@ void lowerIR()
 
 	motor[motorIR] = 0;
 
-	if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 9 || ir4 == 8))
+	if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 9))
 	{
 		nxtDisplayBigTextLine(1, "Pos 2");
+		pos2 = 1;
 		forward(500, -65);
 	  turn(1450, -50, 50);
 		forward(1100, -35);
 		turn(1450, 50, -50);
 		while(SensorValue[sensorIR] != 5)
 	  {
-	  	motor[motorR1] = -40;
-			motor[motorR2] = -40;
-			motor[motorL1] = 40;
-			motor[motorL2] = 40;
+	  	motor[motorR1] = -30;
+			motor[motorR2] = -30;
+			motor[motorL1] = 30;
+			motor[motorL2] = 30;
 	  }
 
 		forward(1700, -45);
@@ -389,13 +451,13 @@ void lowerIR()
 			motor[motorIR] = -20;
 		}
 	}
-	else if(ir1 == 6 && ir2 == 5 && ir3 == 7 && (ir4 == 9 || ir4 == 8))
+	else if((ir1 == 6 || ir1 == 7) && ir2 == 5 && ir3 == 7 && (ir4 == 9 || ir4 == 8))
 	{
 		nxtDisplayBigTextLine(1, "Pos 3");
-
+		pos3 = 1;
 		turn(550, 50, -50);
 	  forward(1500, -35);
-	  turn(750, -50, 50);
+	  turn(700, -50, 50);
 
 
 	  forward(350, -35);
@@ -405,13 +467,14 @@ void lowerIR()
 	}
 	else
 	{
+		pos1 = 1;
 		forward(1000, -65);
 	  turn(1500, -50, 50);
 	  forward(1600, -35);
 	  turn(1550, 50, -50);
-	  forward(1800, -35);
+	  forward(1700, -35);
 	  turn(200, 50, -50);
-		while(SensorValue[sensorIR] != 6)
+		while(SensorValue[sensorIR] != 5)
 	  {
 	  	motor[motorR1] = -30;
 			motor[motorR2] = -30;
@@ -441,6 +504,7 @@ task main()
 	nMotorEncoder[motorLft2] = 0;
 
 	waitForStart();
+	servo[servo3] = 0;
 	servo[servo4] = 240;
 	servo[servo5] = 80;
   lowerIR();
