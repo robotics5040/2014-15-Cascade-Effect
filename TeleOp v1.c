@@ -287,12 +287,12 @@ task eReset() //Emergency Reset (Ends All Subroutines)
 		}
 	}
 }
-
 task main()
 {
 	initializeRobot();
 	bool LBpressed = false;
 	bool ballPickupEnabled = false;
+	nMotorEncoder[motorLft2] = 0;
 	waitForStart();   // wait for start of tele-op phase
 	StartTask(eStop); // start estop task
 	StartTask(eReset);// start ereset task
@@ -379,11 +379,7 @@ task main()
 			liftMotorActivated = true;
 			StartTask(lift1);
 		}
-		if(joy2Btn(2) == 1)
-		{
-			nMotorEncoder[motorLft2] = 0;
-			nMotorEncoder[motorBm] = 0;
-		}
+
 		if(joystick.joy2_TopHat == 4) //reset
 		{
 			StartTask(liftReset);
@@ -394,9 +390,24 @@ task main()
 
 			if (joystick.joy2_y1 > 15 || joystick.joy2_y1 < -15) //If not in deadzone, do motors LEFT
 			{
-
+				if(joystick.joy2_y1 < -15 && nMotorEncoder[motorLft2] > -720)
+				{
+					if(nMotorEncoder[motorLft2] < -200)
+					{
+						motor[motorLft2] = -20;
+						motor[motorLft1] = -20;
+					}
+					else
+					{
+						motor[motorLft2] = 0;
+						motor[motorLft1] = 0;
+					}
+				}
+				else
+				{
 					motor[motorLft2] = (joystick.joy2_y1)/1.5;
 					motor[motorLft1] = (joystick.joy2_y1)/1.5;
+				}
 			}
 			else
 			{
