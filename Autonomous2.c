@@ -1,5 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S3,     sensorSonic,    sensorSONAR)
 #pragma config(Sensor, S4,     sensorIR,       sensorHiTechnicIRSeeker1200)
 #pragma config(Motor,  motorC,          motorIR,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
@@ -300,7 +301,7 @@ void dumpCenter()
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 180;
+	servo[servo3] = 240;
 	while(nMotorEncoder[motorBm] > -650)
 	{
 		motor[motorBm] = -30;
@@ -324,8 +325,7 @@ void dumpCenter()
 	motor[motorBm] = -20;
 	Sleep(250);
 	servo[servo3] = 80;
-	forward(600, 35);
-	stopMotors();
+
 
 	int LiftRunning = 1;
 
@@ -339,6 +339,8 @@ void dumpCenter()
 	}
 	motor[motorBm] = 0;
 	Sleep(300);
+	forward(600, 35);
+	stopMotors();
 	while(nMotorEncoder[motorBm] < -25)
 	{
 		motor[motorBm] = 7;
@@ -358,7 +360,7 @@ void dumpCenter()
 			{
 				motor[motorLft2] = 0;
 				motor[motorLft1] = 0;
-				kickstand();
+				//kickstand();
 				LiftRunning = 0;
 			}
 		}
@@ -380,6 +382,20 @@ void tubeMed()
 
 void lowerIR()
 {
+	int sonar = SensorValue[sensorSonic];
+	if(sonar < 115)
+	{
+		while(SensorValue[sensorSonic] > 20)
+		{
+			motor[motorR1] = -30;
+			motor[motorR2] = -30;
+			motor[motorL1] = -30;
+			motor[motorL2] = -30;
+		}
+		stopMotors();
+		dumpCenter();
+
+	}
 	forward(1600, -30);
 
 	stopMotors();
@@ -441,6 +457,8 @@ void lowerIR()
 			motor[motorR2] = -30;
 			motor[motorL1] = 30;
 			motor[motorL2] = 30;
+			stopMotors();
+
 	  }
 
 		forward(1700, -45);
@@ -450,28 +468,6 @@ void lowerIR()
 		{
 			motor[motorIR] = -20;
 		}
-	}
-	else if((ir1 == 6 || ir1 == 7) && ir2 == 5 && ir3 == 7 && (ir4 == 9 || ir4 == 8))
-	{
-		nxtDisplayBigTextLine(1, "Pos 3");
-		pos3 = 1;
-		turn(550, 50, -50);
-	  forward(1500, -35);
-	  motor[motorR1] = 30;
-		motor[motorR2] = 30;
-		motor[motorL1] = -30;
-		motor[motorL2] = -30;
-		Sleep(500);
-		motor[motorR1] = 0;
-		motor[motorR2] = 0;
-		motor[motorL1] = 0;
-		motor[motorL2] = 0;
-
-
-	  forward(350, -35);
-	  stopMotors();
-	  dumpCenter();
-
 	}
 	else
 	{

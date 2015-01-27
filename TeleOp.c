@@ -1,9 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S3,     ,               sensorHiTechnicIRSeeker1200)
-#pragma config(Sensor, S4,     ,               sensorCustom)
+#pragma config(Sensor, S3,     ,               sensorSONAR)
+#pragma config(Sensor, S4,     ,               sensorHiTechnicIRSeeker1200)
 #pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorR2,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     motorL1,       tmotorTetrix, openLoop)
@@ -127,9 +125,9 @@ task lift1() //high
 
 	while(runLift == true)
 	{
-		motor[motorLft2] = 50;
-		motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -5800)
+		motor[motorLft2] = 90;
+		motor[motorLft1] = 90;
+		if(nMotorEncoder[motorLft2] < -5500)
 		{
 			runLift = false;
 		}
@@ -140,19 +138,14 @@ task lift1() //high
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -950)
+	while(nMotorEncoder[motorBm] > -915)
 	{
 		motor[motorBm] = -1;
 	}
-	motor[motorBm] = 10;
+	motor[motorBm] = 15;
 	Sleep(700);
 	motor[motorBm] = 0;
-	motor[motorLft2] = 30;
-	motor[motorLft1] = 30;
-	Sleep(300);
-	motor[motorLft2] = 0;
-	motor[motorLft1] = 0;
-	servo[servo3] = 230;
+
 	liftMotorActivated = false;
 	StopTask(lift1);
 }
@@ -163,9 +156,9 @@ task lift2() //low
 
 	while(runLift == true)
 	{
-		motor[motorLft2] = 50;
-		motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -2500)
+		motor[motorLft2] = 90;
+		motor[motorLft1] = 90;
+		if(nMotorEncoder[motorLft2] < -2375)
 		{
 			runLift = false;
 		}
@@ -176,13 +169,13 @@ task lift2() //low
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -950)
+	while(nMotorEncoder[motorBm] > -915)
 	{
 		motor[motorBm] = -20;
 	}
 	motor[motorBm] = 50;
 	Sleep(200);
-	motor[motorBm] = 10;
+	motor[motorBm] = 15;
 	Sleep(700);
 	motor[motorBm] = 0;
 
@@ -196,9 +189,9 @@ task lift3() //medium
 
 	while(runLift == true)
 	{
-		motor[motorLft2] = 50;
-		motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -2500)
+		motor[motorLft2] = 90;
+		motor[motorLft1] = 90;
+		if(nMotorEncoder[motorLft2] < -2375)
 		{
 			runLift = false;
 		}
@@ -209,19 +202,14 @@ task lift3() //medium
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -950)
+	while(nMotorEncoder[motorBm] > -915)
 	{
 		motor[motorBm] = -1;
 	}
-	motor[motorBm] = 10;
+	motor[motorBm] = 15;
 	Sleep(700);
 	motor[motorBm] = 0;
-	motor[motorLft2] = 30;
-	motor[motorLft1] = 30;
-	Sleep(300);
-	motor[motorLft2] = 0;
-	motor[motorLft1] = 0;
-	servo[servo3] = 230;
+
 	liftMotorActivated = false;
 	StopTask(lift3);
 }
