@@ -385,7 +385,7 @@ void lowerIR()
 	int sonar = SensorValue[sensorSonic];
 	if(sonar < 115)
 	{
-		while(SensorValue[sensorSonic] > 20)
+		while(SensorValue[sensorSonic] > 22)
 		{
 			motor[motorR1] = -30;
 			motor[motorR2] = -30;
@@ -394,7 +394,11 @@ void lowerIR()
 		}
 		stopMotors();
 		dumpCenter();
-
+	  while(nMotorEncoder[motorIR] > 0)
+		{
+			motor[motorIR] = -20;
+		}
+		return;
 	}
 	forward(1600, -30);
 
@@ -431,10 +435,11 @@ void lowerIR()
 
 	int ir4 = SensorValue[sensorIR];
 
-	nxtDisplayBigTextLine(1, "%d", ir1);
-	nxtDisplayBigTextLine(3, "%d", ir2);
-	nxtDisplayBigTextLine(5, "%d", ir3);
-	nxtDisplayBigTextLine(7, "%d", ir4);
+	nxtDisplayTextLine(1, "%d", ir1);
+	nxtDisplayTextLine(2, "%d", ir2);
+	nxtDisplayTextLine(3, "%d", ir3);
+	nxtDisplayTextLine(4, "%d", ir4);
+	nxtDisplayTextLine(5, "%d", sonar);
 
 	while(nMotorEncoder[motorIR] > 0)
 	{
@@ -443,12 +448,12 @@ void lowerIR()
 
 	motor[motorIR] = 0;
 
-	if(ir1 == 5 && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 7) && (ir4 == 9))
+	if((ir1 == 5 || ir1 == 0) && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 0) && (ir4 == 0 || ir4 == 7))
 	{
-		nxtDisplayBigTextLine(1, "Pos 2");
 		pos2 = 1;
+		PlayTone(300, 300);
 		forward(500, -65);
-	  turn(500, -50, 50);
+	  turn(620, -50, 50);
 		forward(1100, -35);
 		turn(1450, 50, -50);
 		while(SensorValue[sensorIR] != 5)
@@ -474,11 +479,11 @@ void lowerIR()
 		pos1 = 1;
 		forward(1000, -65);
 	  turn(400, -50, 50);
-	  forward(1600, -35);
+	  forward(2600, -35);
 	  turn(1550, 50, -50);
 	  forward(1700, -35);
 
-		while(SensorValue[sensorIR] != 5)
+		while(SensorValue[sensorIR] != 5) //TODO: replace with sonic
 	  {
 	  	motor[motorR1] = -30;
 			motor[motorR2] = -30;
