@@ -215,7 +215,7 @@ void kickstand()
 void dumpMed()
 {
 	bool runLift = true;
-
+	servo[servo3] = 80;
 	while(runLift == true)
 	{
 		motor[motorLft2] = 50;
@@ -289,7 +289,7 @@ void dumpMed()
 void dumpCenter()
 {
 	bool runLift = true;
-
+	servo[servo3] = 80;
 	while(runLift == true)
 	{
 		motor[motorLft2] = 50;
@@ -339,11 +339,11 @@ void dumpCenter()
 	}
 	motor[motorBm] = 0;
 	Sleep(300);
-	forward(600, 35);
+	forward(30, 600);
 	stopMotors();
 	while(nMotorEncoder[motorBm] < -25)
 	{
-		motor[motorBm] = 7;
+		motor[motorBm] = 10;
 	}
 	motor[motorBm] = 0;
 	Sleep(300);
@@ -351,7 +351,7 @@ void dumpCenter()
 	{
 		if(nMotorEncoder[motorLft2] > -720)
 		{
-			if(nMotorEncoder[motorLft2] < -50)
+			if(nMotorEncoder[motorLft2] < -200)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -360,8 +360,8 @@ void dumpCenter()
 			{
 				motor[motorLft2] = 0;
 				motor[motorLft1] = 0;
-				//kickstand();
 				LiftRunning = 0;
+
 			}
 		}
 		else
@@ -400,12 +400,14 @@ void lowerIR()
 		}
 		return;
 	}
+
 	forward(1600, -30);
 
 	stopMotors();
 
 	nMotorEncoder[motorIR] = 0;
-
+	Sleep(300);
+	sonar = SensorValue[sensorSonic];
 	int ir1 = SensorValue[sensorIR];
 
 	while(nMotorEncoder[motorIR] > -48)
@@ -447,11 +449,49 @@ void lowerIR()
 	}
 
 	motor[motorIR] = 0;
+	if((sonar < 200) || ((ir1 == 5 || ir1 == 0) && (ir2 == 5 || ir2 == 0) && (ir3 == 7 || ir3 == 0) && (ir4 == 7 || ir4 == 0)))
+	{
+		pos1 = 1;
+		PlayTone(300, 300);
+		forward(1000, -65);
+	  motor[motorR1] = 30;
+		motor[motorR2] = 30;
+		motor[motorL1] = -30;
+		motor[motorL2] = -30;
+		Sleep(1200);
+		motor[motorR1] = 0;
+		motor[motorR2] = 0;
+		motor[motorL1] = 0;
+		motor[motorL2] = 0;
+	  forward(2400, -35);
+	  turn(1550, 50, -50);
+	  forward(2100, -35);
 
-	if((ir1 == 5 || ir1 == 0) && (ir2 == 4 || ir2 == 5) && (ir3 == 6 || ir3 == 0) && (ir4 == 0 || ir4 == 7))
+		while((SensorValue[sensorIR] != 5) && (SensorValue[sensorSonic] > 35)) //TODO: replace with sonic
+	  {
+	  	motor[motorR1] = -30;
+			motor[motorR2] = -30;
+			motor[motorL1] = 30;
+			motor[motorL2] = 30;
+	  }
+	  motor[motorR1] = -30;
+		motor[motorR2] = -30;
+		motor[motorL1] = 30;
+		motor[motorL2] = 30;
+		Sleep(400);
+	  forward(650, -35);
+	  stopMotors();
+	  servo[servo3] = 0;
+	  dumpCenter();
+	  while(nMotorEncoder[motorIR] > 0)
+		{
+			motor[motorIR] = -20;
+		}
+	}
+	else
 	{
 		pos2 = 1;
-		PlayTone(300, 300);
+
 		forward(500, -65);
 	  turn(620, -50, 50);
 		forward(1100, -35);
@@ -474,31 +514,7 @@ void lowerIR()
 			motor[motorIR] = -20;
 		}
 	}
-	else
-	{
-		pos1 = 1;
-		forward(1000, -65);
-	  turn(400, -50, 50);
-	  forward(2600, -35);
-	  turn(1550, 50, -50);
-	  forward(1700, -35);
 
-		while(SensorValue[sensorIR] != 5) //TODO: replace with sonic
-	  {
-	  	motor[motorR1] = -30;
-			motor[motorR2] = -30;
-			motor[motorL1] = 30;
-			motor[motorL2] = 30;
-	  }
-	  forward(1050, -35);
-	  stopMotors();
-	  servo[servo3] = 0;
-	  dumpCenter();
-	  while(nMotorEncoder[motorIR] > 0)
-		{
-			motor[motorIR] = -20;
-		}
-	}
 }
 
 task main()
@@ -516,6 +532,11 @@ task main()
 	servo[servo3] = 80;
 	servo[servo4] = 240;
 	servo[servo5] = 80;
+	motor[motorLft2] = 50;
+	motor[motorLft1] = 50;
+	Sleep(500);
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
   lowerIR();
 	stopMotors();
 
