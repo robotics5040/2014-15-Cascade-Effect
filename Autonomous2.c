@@ -349,9 +349,9 @@ void dumpCenter()
 	Sleep(300);
 	while(LiftRunning == 1)
 	{
-		if(nMotorEncoder[motorLft2] > -720)
+		if(nMotorEncoder[motorLft2] > -1720)
 		{
-			if(nMotorEncoder[motorLft2] < -200)
+			if(nMotorEncoder[motorLft2] < -1200)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -406,7 +406,7 @@ void lowerIR()
 	stopMotors();
 
 	nMotorEncoder[motorIR] = 0;
-	Sleep(300);
+	Sleep(1000);
 	sonar = SensorValue[sensorSonic];
 	int ir1 = SensorValue[sensorIR];
 
@@ -449,37 +449,42 @@ void lowerIR()
 	}
 
 	motor[motorIR] = 0;
-	if((sonar < 200) || ((ir1 == 5 || ir1 == 0) && (ir2 == 5 || ir2 == 0) && (ir3 == 7 || ir3 == 0) && (ir4 == 7 || ir4 == 0)))
+	if((sonar < 200) || (ir1 == 5 && ir2 == 5 && ir3 == 7 && (ir4 == 8 || ir4 == 0)))
 	{
 		pos1 = 1;
 		PlayTone(300, 300);
 		forward(1000, -65);
-	  motor[motorR1] = 30;
-		motor[motorR2] = 30;
-		motor[motorL1] = -30;
-		motor[motorL2] = -30;
+	  motor[motorR1] = 25;
+		motor[motorR2] = 25;
+		motor[motorL1] = -25;
+		motor[motorL2] = -25;
 		Sleep(1200);
 		motor[motorR1] = 0;
 		motor[motorR2] = 0;
 		motor[motorL1] = 0;
 		motor[motorL2] = 0;
 	  forward(2400, -35);
-	  turn(1550, 50, -50);
-	  forward(2100, -35);
-
+	  turn(1500, 50, -50);
+	  forward(1800, -35);
+		turn(1550, 30, -30);
 		while((SensorValue[sensorIR] != 5) && (SensorValue[sensorSonic] > 35)) //TODO: replace with sonic
 	  {
-	  	motor[motorR1] = -30;
-			motor[motorR2] = -30;
-			motor[motorL1] = 30;
-			motor[motorL2] = 30;
+	  	motor[motorR1] = -20;
+			motor[motorR2] = -20;
+			motor[motorL1] = 20;
+			motor[motorL2] = 20;
 	  }
-	  motor[motorR1] = -30;
-		motor[motorR2] = -30;
-		motor[motorL1] = 30;
-		motor[motorL2] = 30;
-		Sleep(400);
-	  forward(650, -35);
+
+
+	  motor[motorR1] = -25;
+		motor[motorR2] = -25;
+		motor[motorL1] = -25;
+		motor[motorL2] = -25;
+		Sleep(500);
+		motor[motorR1] = 0;
+		motor[motorR2] = 0;
+		motor[motorL1] = 0;
+		motor[motorL2] = 0;
 	  stopMotors();
 	  servo[servo3] = 0;
 	  dumpCenter();
@@ -493,20 +498,32 @@ void lowerIR()
 		pos2 = 1;
 
 		forward(500, -65);
-	  turn(620, -50, 50);
-		forward(1100, -35);
-		turn(1450, 50, -50);
-		while(SensorValue[sensorIR] != 5)
+		motor[motorR1] = 25;
+		motor[motorR2] = 25;
+		motor[motorL1] = -25;
+		motor[motorL2] = -25;
+		Sleep(1000);
+		motor[motorR1] = 0;
+		motor[motorR2] = 0;
+		motor[motorL1] = 0;
+		motor[motorL2] = 0;
+		forward(1350, -35);
+		turn(1650, 50, -50);
+		while((SensorValue[sensorIR] != 5) && (SensorValue[sensorSonic] > 45))
 	  {
-	  	motor[motorR1] = -30;
-			motor[motorR2] = -30;
-			motor[motorL1] = 30;
-			motor[motorL2] = 30;
-			stopMotors();
+	  	motor[motorR1] = -20;
+			motor[motorR2] = -20;
+			motor[motorL1] = 20;
+			motor[motorL2] = 20;
+
 
 	  }
+			motor[motorR1] = -30;
+			motor[motorR2] = -30;
+			motor[motorL1] = -30;
+			motor[motorL2] = -30;
+			Sleep(750);
 
-		forward(1700, -45);
 		stopMotors();
 		dumpCenter();
 		while(nMotorEncoder[motorIR] > 0)

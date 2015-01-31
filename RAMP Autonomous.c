@@ -1,5 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
 #pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S3,     sensorSonic,    sensorSONAR)
 #pragma config(Sensor, S4,     sensorIR,       sensorHiTechnicIRSeeker1200)
 #pragma config(Motor,  motorC,          motorIR,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorR1,       tmotorTetrix, openLoop, reversed)
@@ -86,15 +87,15 @@ void forward(int dist, int power)
 		if (abs(nMotorEncoder[motorR2]) > abs(nMotorEncoder[motorL2]))
 		{
 			motor[motorR1] = power;
-			motor[motorL1] = power - 10;
+			motor[motorL1] = power;
 			motor[motorR2] = power;
-			motor[motorL2] = power - 10;
+			motor[motorL2] = power;
 		}
 		else if (abs(nMotorEncoder[motorR2]) < abs(nMotorEncoder[motorL2]))
 		{
-			motor[motorR1] = power - 10;
+			motor[motorR1] = power;
 			motor[motorL1] = power;
-			motor[motorR2] = power - 10;
+			motor[motorR2] = power;
 			motor[motorL2] = power;
 		}
 		else
@@ -147,21 +148,47 @@ task main()
   initializeRobot();
 
   waitForStart(); // Wait for the beginning of autonomous phase.
+  servo[servo3] = 80;
+	servo[servo4] = 240;
+	servo[servo5] = 80;
+	nMotorEncoder[motorBm] = 0;
+  nMotorEncoder[motorLft2] = 0;
+  motor[motorLft2] = 50;
+	motor[motorLft1] = 50;
+	Sleep(500);
+	motor[motorLft2] = 0;
+	motor[motorLft1] = 0;
   nMotorEncoder[motorLft2] = 0;
 	forward(1000, 30);
-	servo[servo3] = 0;
+
 	servo[servo4] = 240;
 	servo[servo5] = 80;
 	forward(4000, 20);
 	forward(2000, 30);
-	turn(1750, -30, 30);
-	forward(2000, -30);
+	forward(300, 30);
+	motor[motorR1] = -50;
+	motor[motorR2] = -50;
+	motor[motorL1] = 50;
+	motor[motorL2] = 50;
+	Sleep(1400);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	while(SensorValue[sensorSonic] > 55) //TODO: replace with sonic
+	  {
+	  	motor[motorR1] = -25;
+			motor[motorR2] = -25;
+			motor[motorL1] = 25;
+			motor[motorL2] = 25;
+	  }
 	stopMotors();
+
+	Sleep(500);
+	forward(1000, -25);
 	servo[servo4] = 172;
 	servo[servo5] = 150;
-	Sleep(500);
-	forward(1000, -30);
-	forward(300, -20);
+	forward(1250, -30);
 	stopMotors();
 	bool runLift = true;
 
@@ -169,7 +196,7 @@ task main()
 	{
 		motor[motorLft2] = 50;
 		motor[motorLft1] = 50;
-		if(nMotorEncoder[motorLft2] < -2500)
+		if(nMotorEncoder[motorLft2] < -2200)
 		{
 			runLift = false;
 		}
@@ -192,9 +219,9 @@ task main()
 	Sleep(300);
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 120;
+	servo[servo3] = 240;
 	Sleep(1000);
-	servo[servo3] = 0;
+	servo[servo3] = 80;
 	int LiftRunning = 1;
 
 	while(nMotorEncoder[motorBm] < -650)
@@ -236,6 +263,15 @@ task main()
 			motor[motorLft1] = -40;
 		}
 	}
+	motor[motorR1] = -50;
+	motor[motorR2] = -50;
+	motor[motorL1] = 50;
+	motor[motorL2] = 50;
+	Sleep(400);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   ////                                                   ////

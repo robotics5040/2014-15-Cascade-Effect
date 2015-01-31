@@ -236,9 +236,9 @@ task liftReset() //stop other lift commands
 	Sleep(300);
 	while(LiftRunning == 1)
 	{
-		if(nMotorEncoder[motorLft2] > -720)
+		if(nMotorEncoder[motorLft2] > -1720)
 		{
-			if(nMotorEncoder[motorLft2] < -200)
+			if(nMotorEncoder[motorLft2] < -1200)
 			{
 				motor[motorLft2] = -20;
 				motor[motorLft1] = -20;
@@ -272,6 +272,7 @@ task eReset() //Emergency Reset (Ends All Subroutines)
 			StopTask(lift2);
 			StopTask(lift3);
 			StopTask(liftReset);
+			liftMotorActivated = false;
 		}
 	}
 }
