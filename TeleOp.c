@@ -100,7 +100,51 @@ void stopMotors()
 	motor[motorLft1] = 0;
 	motor[motorLft2] = 0;
 }
+task liftReset() //stop other lift commands
+{
+	int LiftRunning = 1;
+	servo[servo3] = 80;
+	while(nMotorEncoder[motorBm] < -650)
+	{
+		motor[motorBm] = 50;
+	}
+	while(nMotorEncoder[motorBm] < -300)
+	{
+		motor[motorBm] = 1;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(nMotorEncoder[motorBm] < -25)
+	{
+		motor[motorBm] = 10;
+	}
+	motor[motorBm] = 0;
+	Sleep(300);
+	while(LiftRunning == 1)
+	{
+		if(nMotorEncoder[motorLft2] > -720)
+		{
+			if(nMotorEncoder[motorLft2] < -200)
+			{
+				motor[motorLft2] = -20;
+				motor[motorLft1] = -20;
+			}
+			else
+			{
+				motor[motorLft2] = 0;
+				motor[motorLft1] = 0;
+				LiftRunning = 0;
+				liftMotorActivated = false;
+			}
+		}
+		else
+		{
+			motor[motorLft2] = -40;
+			motor[motorLft1] = -40;
+		}
+	}
 
+}
 
 
 task eStop() //Emergency Stop (Complete Program Stop)
@@ -127,27 +171,25 @@ task lift1() //high
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -5500)
+		if(nMotorEncoder[motorLft2] < -4500)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	while(nMotorEncoder[motorBm] > -600)
+	servo[servo3] = 80;
+		while(nMotorEncoder[motorBm] > -600)
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -915)
+	while(nMotorEncoder[motorBm] > -975)
 	{
-		motor[motorBm] = -1;
+		motor[motorBm] = -5;
 	}
-	motor[motorBm] = 15;
-	Sleep(700);
-	motor[motorBm] = 0;
 
-	liftMotorActivated = false;
-	StopTask(lift1);
+	Sleep(355);
+	StartTask(liftReset);
 }
 
 task lift2() //low
@@ -158,29 +200,29 @@ task lift2() //low
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -2375)
+		if(nMotorEncoder[motorLft2] < -1375)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
+	servo[servo3] = 80;
 	while(nMotorEncoder[motorBm] > -600)
 	{
-		motor[motorBm] = -40;
+		motor[motorBm] = -60;
 	}
-	while(nMotorEncoder[motorBm] > -915)
+	while(nMotorEncoder[motorBm] > -975)
 	{
 		motor[motorBm] = -20;
 	}
-	motor[motorBm] = 50;
-	Sleep(200);
-	motor[motorBm] = 15;
-	Sleep(700);
-	motor[motorBm] = 0;
 
-	liftMotorActivated = false;
-	StopTask(lift2);
+	Sleep(355);
+
+
+
+	StartTask(liftReset);
+
 }
 
 task lift3() //medium
@@ -191,74 +233,30 @@ task lift3() //medium
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -2375)
+		if(nMotorEncoder[motorLft2] < -1375)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
+	servo[servo3] = 80;
 	while(nMotorEncoder[motorBm] > -600)
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -915)
+	while(nMotorEncoder[motorBm] > -975)
 	{
-		motor[motorBm] = -1;
+		motor[motorBm] = -5;
 	}
-	motor[motorBm] = 15;
-	Sleep(700);
-	motor[motorBm] = 0;
 
-	liftMotorActivated = false;
-	StopTask(lift3);
-}
+	Sleep(355);
 
-task liftReset() //stop other lift commands
-{
-	int LiftRunning = 1;
-
-	while(nMotorEncoder[motorBm] < -650)
-	{
-		motor[motorBm] = 30;
-	}
-	while(nMotorEncoder[motorBm] < -300)
-	{
-		motor[motorBm] = 1;
-	}
-	motor[motorBm] = 0;
-	Sleep(300);
-	while(nMotorEncoder[motorBm] < -25)
-	{
-		motor[motorBm] = 10;
-	}
-	motor[motorBm] = 0;
-	Sleep(300);
-	while(LiftRunning == 1)
-	{
-		if(nMotorEncoder[motorLft2] > -1720)
-		{
-			if(nMotorEncoder[motorLft2] < -1200)
-			{
-				motor[motorLft2] = -20;
-				motor[motorLft1] = -20;
-			}
-			else
-			{
-				motor[motorLft2] = 0;
-				motor[motorLft1] = 0;
-				LiftRunning = 0;
-				liftMotorActivated = false;
-			}
-		}
-		else
-		{
-			motor[motorLft2] = -40;
-			motor[motorLft1] = -40;
-		}
-	}
+	StartTask(liftReset);
 
 }
+
+
 task eReset() //Emergency Reset (Ends All Subroutines)
 {
 	while(true)
@@ -325,22 +323,42 @@ task main()
 		}
 		if(joy2Btn(8) == 1)
 		{
-			servo[servo3] = 80;
+			servo[servo3] = 230;
 
 		}
 		if(joy2Btn(6) == 1)
 		{
-			servo[servo3] = 230;
+			servo[servo3] = 80;
 
 		}
-
+		if(joy2Btn(5) == 1)
+		{
+			while(nMotorEncoder[motorBm] > -650)
+		{
+			motor[motorBm] = -40;
+		}
+		}
 		//toggle ball pickup code
-		if(joy1Btn(5) == 1 && LBpressed == false)
+		if(joy1Btn(7) == 1 && LBpressed == false)
 		{
 			LBpressed = true;
 			if(ballPickupEnabled == false)
 			{
-				motor[motorBlPickup] = 50;
+				motor[motorBlPickup] = -85;
+				ballPickupEnabled = true;
+			}
+			else
+			{
+				motor[motorBlPickup] = 0;
+				ballPickupEnabled = false;
+			}
+		}
+		else if(joy1Btn(5) == 1 && LBpressed == false)
+		{
+			LBpressed = true;
+			if(ballPickupEnabled == false)
+			{
+				motor[motorBlPickup] = 85;
 				ballPickupEnabled = true;
 			}
 			else
@@ -350,7 +368,7 @@ task main()
 			}
 
 		}
-		if(joy1Btn(5) == 0)
+		if(joy1Btn(5) == 0 && joy1Btn(7) == 0)
 		{
 			LBpressed = false;
 		}

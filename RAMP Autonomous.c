@@ -148,7 +148,12 @@ task main()
   initializeRobot();
 
   waitForStart(); // Wait for the beginning of autonomous phase.
-  servo[servo3] = 80;
+  while(nMotorEncoder[motorC] < 90)
+	{
+		motor[motorC] = 30;
+	}
+	motor[motorC] = 0;
+  servo[servo3] = 230;
 	servo[servo4] = 240;
 	servo[servo5] = 80;
 	nMotorEncoder[motorBm] = 0;
@@ -164,18 +169,18 @@ task main()
 	servo[servo4] = 240;
 	servo[servo5] = 80;
 	forward(4000, 20);
-	forward(2000, 30);
+	forward(3000, 30);
 	forward(300, 30);
 	motor[motorR1] = -50;
 	motor[motorR2] = -50;
 	motor[motorL1] = 50;
 	motor[motorL2] = 50;
-	Sleep(1400);
+	Sleep(1100);
 	motor[motorR1] = 0;
 	motor[motorR2] = 0;
 	motor[motorL1] = 0;
 	motor[motorL2] = 0;
-	while(SensorValue[sensorSonic] > 55) //TODO: replace with sonic
+	while(SensorValue[sensorSonic] > 75) //TODO: replace with sonic
 	  {
 	  	motor[motorR1] = -25;
 			motor[motorR2] = -25;
@@ -189,6 +194,15 @@ task main()
 	servo[servo4] = 172;
 	servo[servo5] = 150;
 	forward(1250, -30);
+	motor[motorR1] = -50;
+	motor[motorR2] = -50;
+	motor[motorL1] = -50;
+	motor[motorL2] = -50;
+	Sleep(400);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
 	stopMotors();
 	bool runLift = true;
 
@@ -219,9 +233,9 @@ task main()
 	Sleep(300);
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 240;
-	Sleep(1000);
 	servo[servo3] = 80;
+	Sleep(1000);
+	servo[servo3] = 240;
 	int LiftRunning = 1;
 
 	while(nMotorEncoder[motorBm] < -650)
@@ -268,6 +282,24 @@ task main()
 	motor[motorL1] = 50;
 	motor[motorL2] = 50;
 	Sleep(400);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	motor[motorR1] = 50;
+	motor[motorR2] = 50;
+	motor[motorL1] = 50;
+	motor[motorL2] = 50;
+	Sleep(4000);
+	motor[motorR1] = 0;
+	motor[motorR2] = 0;
+	motor[motorL1] = 0;
+	motor[motorL2] = 0;
+	motor[motorR1] = 50;
+	motor[motorR2] = 50;
+	motor[motorL1] = -50;
+	motor[motorL2] = -50;
+	Sleep(1400);
 	motor[motorR1] = 0;
 	motor[motorR2] = 0;
 	motor[motorL1] = 0;
