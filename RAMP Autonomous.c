@@ -168,19 +168,18 @@ task main()
 
 	servo[servo4] = 240;
 	servo[servo5] = 80;
-	forward(4000, 20);
-	forward(3000, 30);
-	forward(300, 30);
+	forward(4000, 10);
+	forward(2500, 30);
 	motor[motorR1] = -50;
 	motor[motorR2] = -50;
 	motor[motorL1] = 50;
 	motor[motorL2] = 50;
-	Sleep(1100);
+	Sleep(1300);
 	motor[motorR1] = 0;
 	motor[motorR2] = 0;
 	motor[motorL1] = 0;
 	motor[motorL2] = 0;
-	while(SensorValue[sensorSonic] > 75) //TODO: replace with sonic
+	while(SensorValue[sensorSonic] > 55) //TODO: replace with sonic
 	  {
 	  	motor[motorR1] = -25;
 			motor[motorR2] = -25;
@@ -221,7 +220,7 @@ task main()
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -950)
+	while(nMotorEncoder[motorBm] > -900)
 	{
 		motor[motorBm] = -1;
 	}

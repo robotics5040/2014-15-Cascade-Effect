@@ -171,25 +171,28 @@ task lift1() //high
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -4500)
+		if(nMotorEncoder[motorLft2] < -4600) //How high
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 80;
-		while(nMotorEncoder[motorBm] > -600)
+
+		while(nMotorEncoder[motorBm] > -600) //to 180
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -975)
+	while(nMotorEncoder[motorBm] > -900) //to final
 	{
 		motor[motorBm] = -5;
 	}
+	motor[motorBm] = 20; //reverse brake
+	Sleep(250);
+	motor[motorBm] = 5; //hold
 
-	Sleep(355);
-	StartTask(liftReset);
+
+
 }
 
 task lift2() //low
@@ -200,28 +203,27 @@ task lift2() //low
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -1375)
+		if(nMotorEncoder[motorLft2] < -1775)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 80;
+
 	while(nMotorEncoder[motorBm] > -600)
 	{
-		motor[motorBm] = -60;
+		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -975)
+	while(nMotorEncoder[motorBm] > -900)
 	{
-		motor[motorBm] = -20;
+		motor[motorBm] = -5;
 	}
+motor[motorBm] = 20;
 
-	Sleep(355);
+Sleep(250);
+motor[motorBm] = 5;
 
-
-
-	StartTask(liftReset);
 
 }
 
@@ -233,26 +235,25 @@ task lift3() //medium
 	{
 		motor[motorLft2] = 90;
 		motor[motorLft1] = 90;
-		if(nMotorEncoder[motorLft2] < -1375)
+		if(nMotorEncoder[motorLft2] < -1775)
 		{
 			runLift = false;
 		}
 	}
 	motor[motorLft2] = 0;
 	motor[motorLft1] = 0;
-	servo[servo3] = 80;
+
 	while(nMotorEncoder[motorBm] > -600)
 	{
 		motor[motorBm] = -40;
 	}
-	while(nMotorEncoder[motorBm] > -975)
+	while(nMotorEncoder[motorBm] > -900)
 	{
 		motor[motorBm] = -5;
 	}
-
-	Sleep(355);
-
-	StartTask(liftReset);
+	motor[motorBm] = 20;
+	Sleep(250);
+	motor[motorBm] = 5;
 
 }
 
@@ -333,10 +334,11 @@ task main()
 		}
 		if(joy2Btn(5) == 1)
 		{
-			while(nMotorEncoder[motorBm] > -650)
-		{
-			motor[motorBm] = -40;
-		}
+			servo[servo3] = 80;
+	while(nMotorEncoder[motorBm] > -600)
+	{
+		motor[motorBm] = -40;
+	}
 		}
 		//toggle ball pickup code
 		if(joy1Btn(7) == 1 && LBpressed == false)
